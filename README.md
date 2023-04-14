@@ -5,6 +5,18 @@ Project Structure:
  - lpc/: contains all lpc codebase needed for the test
  - glitcher/: contains all pi2040 code for glitching
 
+
+## Glitcher
+
+The glitcher controller is pi2040. It uses the PIO interface to drive a single pin high or low at clock speed.
+
+## LPC firmware
+
+The lpc firmware does boot, put P0[26] LOW and start the target loop. Once finished P0[26] is raised HIGH again, and after a delay P0[26] is set to low again just before the target loop is executed again and so on.
+
+
+
+
 ## Stuff needed
 
 
