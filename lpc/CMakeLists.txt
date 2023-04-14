@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 project("lpc")
 enable_language(ASM)
 set(CMAKE_BUILD_PARALLEL_LEVEL 16)
-set(TARGET_NAME main)
+set(TARGET_NAME lpc_fw)
 
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(SYSINC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/common)
@@ -74,6 +74,9 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
         COMMAND ${CMAKE_OBJDUMP} ARGS -S ${TARGET_NAME}.elf > ${DIS_FILE}
         COMMAND ${CMAKE_SIZE} ARGS --format=SysV -x ${TARGET_NAME}.elf
         COMMAND ${CMAKE_SIZE} ARGS ${TARGET_NAME}.elf
+        # copy over hex and bin to root directory.
+        COMMAND ${CMAKE_COMMAND} -E copy ${HEX_FILE} "${PROJECT_SOURCE_DIR}/../lpc_firmare.hex"
+        COMMAND ${CMAKE_COMMAND} -E copy ${BIN_FILE} "${PROJECT_SOURCE_DIR}/../lpc_firmare.bin"
         )
 
 # Define the clean target
@@ -95,3 +98,4 @@ add_custom_target(upload
         DEPENDS ${BIN_FILE}
         COMMENT "Upload ${BIN_FILE} to device"
         )
+
