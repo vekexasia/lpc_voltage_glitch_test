@@ -169,9 +169,7 @@ int main(void) {
         volatile int sum = 0;
 
         LPC_GPIO0->CLR = LED_PIN;
-        LPC_GPIO0->CLR = SIGNAL_PIN;
         LPC_GPIO0->SET = SIGNAL_PIN;
-        LPC_GPIO0->CLR = SIGNAL_PIN;
         // Turn on LED
         for (volatile int i = 0; i < 100; ++i) {
             // 1.52ms per loop cycle
@@ -186,8 +184,8 @@ int main(void) {
         }
 
 
+        LPC_GPIO0->CLR = SIGNAL_PIN;
         LPC_GPIO0->SET = LED_PIN;
-        LPC_GPIO0->SET = SIGNAL_PIN;
 
 
         if (sum == COUNT) {
