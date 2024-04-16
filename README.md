@@ -54,3 +54,18 @@ As of now this is the most stable without BO setting I could get. (no glitches y
 
 Brown Out Detection can be disabled by connecting P2[13] of LPC1768 to GND upon boot.
 
+
+
+---- 
+
+Install: 
+```bash
+
+sudo apt install cmake gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
+git submodule update --init --recursive
+# add PICO_SDK_PATH to PATH
+```
+
+The board used for this repo is this one: ![img.png](docs/img.png) and could be found in the docs folder.
+
+

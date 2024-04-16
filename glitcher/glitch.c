@@ -6,14 +6,26 @@
 #include <time.h>
 
 
+#define LPC_PIN_RX 0
+#define LPC_PIN_TX 1
+// Needs to be jumpered.
+#define LPC_PIN_SWDIO 2
+#define LPC_PIN_SWCLK 3
+
+#define LPC_PIN_0_1 10
+#define LPC_PIN_0_10 11
+#define LPC_PIN_0_11 12
+#define LPC_PIN_2_13 13
+
+#define LPC_PIN_RESET 21
+#define LPC_PIN_RESET_OUT 20
+
+#define MAX_PIN_ENABLE 18
+#define MAX_PIN_SELECTOR 19
+
 
 #define DISABLEMAXOUT 1
 #define ENABLEMAXOUT 0
-
-#define MAXPINENABLE 18
-#define GLITCHOUTPIN 19
-#define SIGNALPINFROMLPC 11
-
 
 #define CMD_DELAY 'D'
 #define CMD_PULSE 'P'
