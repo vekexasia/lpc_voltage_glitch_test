@@ -19,7 +19,7 @@ set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
 # Set the path to the compiler and linker tools
-set(CROSS_COMPILE /opt/gcc-arm-none-eabi/bin/arm-none-eabi-)
+set(CROSS_COMPILE /usr/share/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-)
 set(CMAKE_C_COMPILER ${CROSS_COMPILE}gcc)
 set(CMAKE_ASM_COMPILER ${CMAKE_C_COMPILER})
 set(CMAKE_OBJCOPY ${CROSS_COMPILE}objcopy)

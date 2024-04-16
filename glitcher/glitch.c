@@ -17,6 +17,8 @@
 #define LPC_PIN_0_11 12
 #define LPC_PIN_2_13 13
 
+#define SIGNAL_PIN_FROM_LPC LPC_PIN_0_10
+
 #define LPC_PIN_RESET 21
 #define LPC_PIN_RESET_OUT 20
 
@@ -32,23 +34,23 @@
 #define CMD_GLITCH 'G'
 
 void initialize_board() {
-    gpio_init(MAXPINENABLE);
-    gpio_put(MAXPINENABLE, DISABLEMAXOUT);
-    gpio_set_dir(MAXPINENABLE, GPIO_OUT);
+    gpio_init(MAX_PIN_ENABLE);
+    gpio_put(MAX_PIN_ENABLE, DISABLEMAXOUT);
+    gpio_set_dir(MAX_PIN_ENABLE, GPIO_OUT);
 
-    gpio_init(GLITCHOUTPIN);
-//    gpio_put(GLITCHOUTPIN, 1);
-    gpio_set_dir(GLITCHOUTPIN, GPIO_OUT);
+    gpio_init(MAX_PIN_SELECTOR);
+//    gpio_put(MAX_PIN_SELECTOR, 1);
+    gpio_set_dir(MAX_PIN_SELECTOR, GPIO_OUT);
 
-    gpio_init(SIGNALPINFROMLPC);
-    gpio_set_dir(SIGNALPINFROMLPC, GPIO_IN);
-    gpio_pull_up(SIGNALPINFROMLPC);
+    gpio_init(SIGNAL_PIN_FROM_LPC);
+    gpio_set_dir(SIGNAL_PIN_FROM_LPC, GPIO_IN);
+    gpio_pull_up(SIGNAL_PIN_FROM_LPC);
 }
 
 void        power_cycle_target() {
-    gpio_put(MAXPINENABLE, DISABLEMAXOUT);
+    gpio_put(MAX_PIN_ENABLE, DISABLEMAXOUT);
     sleep_ms(50);
-    gpio_put(MAXPINENABLE, ENABLEMAXOUT);
+    gpio_put(MAX_PIN_ENABLE, ENABLEMAXOUT);
 }
 
 int dma_chan;
@@ -67,7 +69,7 @@ static uint32_t wavetable[GLITCH_BUFFER_SIZE+1] = {1};
 
 void setup_dma(uint sm) {
     uint offset = pio_add_program(pio0, &pio_serialiser_program);
-    pio_serialiser_program_init(pio0, 0, offset, GLITCHOUTPIN, PIO_SERIAL_CLKDIV);
+    pio_serialiser_program_init(pio0, 0, offset, MAX_PIN_SELECTOR, PIO_SERIAL_CLKDIV);
     dma_chan = dma_claim_unused_channel(true);
     dma_channel_config c = dma_channel_get_default_config(dma_chan);
     channel_config_set_transfer_data_size(&c, DMA_SIZE_32);
@@ -144,7 +146,7 @@ int main() {
     gpio_init(led_pin);
     gpio_set_dir(led_pin, GPIO_OUT);
 
-    gpio_init(SIGNALPINFROMLPC);
+    gpio_init(SIGNAL_PIN_FROM_LPC);
 
     uint32_t delay = 10;
     uint32_t pulse = 2;
@@ -184,19 +186,19 @@ int main() {
 
                 // uint32_t saved_interrupt_config = save_and_disable_interrupts();
                 prepare_wave(pulse, delay);
-                gpio_put(MAXPINENABLE, ENABLEMAXOUT);
+                gpio_put(MAX_PIN_ENABLE, ENABLEMAXOUT);
                 // power_cycle_target();
                 // sleep_ms(2);
                 // Timing matters here
                // printf("Wait\n");
                 clock_t start = clock();
 
-                while(gpio_get(SIGNALPINFROMLPC) == 1);
+                while(gpio_get(SIGNAL_PIN_FROM_LPC) == 1);
                 dma_channel_start(dma_chan);
                 clock_t b = clock();
 
 
-                while(gpio_get(SIGNALPINFROMLPC) == 0);
+                while(gpio_get(SIGNAL_PIN_FROM_LPC) == 0);
                 clock_t afterPin = clock();
                 printf("\rD: %d, W: %d, Total: %.8f\n", delay, pulse, (double)(b- start)/CLOCKS_PER_SEC);
                 // sleep_ms(50);

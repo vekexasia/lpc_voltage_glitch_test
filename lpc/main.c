@@ -6,7 +6,7 @@ __attribute__((section(".crp"))) const uint32_t __CRP_WORD_END__ = 0x87654321;
 
 #define LED_PIN (1 << 0) // GPIO0.0
 #define LED2_PIN (1 << 1) // GPIO0.3
-#define SIGNAL_PIN (1 << 26) // GPIO0.26
+#define SIGNAL_PIN (1 << 10) // GPIO0.10
 
 
 #define BAUD_RATE 115200
@@ -128,7 +128,7 @@ int main(void) {
     LPC_GPIO0->DIR |= LED_PIN; // Set GPIO0.0 as output
     LPC_GPIO0->DIR |= LED2_PIN;
 
-    LPC_GPIO0->DIR |= SIGNAL_PIN; // Set GPIO0.26 as output
+    LPC_GPIO0->DIR |= SIGNAL_PIN; // Set GPIO0.10 as output
     LPC_GPIO0->SET = LED_PIN;
     LPC_GPIO0->CLR = LED_PIN;
     LPC_GPIO0->SET = LED_PIN;

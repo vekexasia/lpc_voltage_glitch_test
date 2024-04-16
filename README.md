@@ -66,6 +66,33 @@ git submodule update --init --recursive
 # add PICO_SDK_PATH to PATH
 ```
 
+Download https://developer.arm.com/downloads/-/gnu-rm
+```bash
+sudo apt remove binutils-arm-none-eabi libnewlib-arm-none-eabi gcc-arm-none-eabi
+sudo tar -xvf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar  -C /usr/share
+sudo ln -s /usr/share/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gcc /usr/bin/arm-none-eabi-gcc 
+sudo ln -s /usr/share/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-g++ /usr/bin/arm-none-eabi-g++
+sudo ln -s /usr/share/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb /usr/bin/arm-none-eabi-gdb
+sudo ln -s /usr/share/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-size /usr/bin/arm-none-eabi-size
+sudo ln -s /usr/share/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-objcopy /usr/bin/arm-none-eabi-objcopy
+sudo ln -s /usr/share/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-objdump /usr/bin/arm-none-eabi-objdump
+
+
+sudo apt install libncurses-dev
+sudo ln -s /usr/lib/x86_64-linux-gnu/libncurses.so.6 /usr/lib/x86_64-linux-gnu/libncurses.so.5
+sudo ln -s /usr/lib/x86_64-linux-gnu/libtinfo.so.6 /usr/lib/x86_64-linux-gnu/libtinfo.so.5
+```
+
+Check
+```bash
+arm-none-eabi-gcc --version
+arm-none-eabi-g++ --version
+arm-none-eabi-gdb --version
+arm-none-eabi-size --version
+```
+Notes: taken from: https://askubuntu.com/questions/1243252/how-to-install-arm-none-eabi-gdb-on-ubuntu-20-04-lts-focal-fossa
+
+
 The board used for this repo is this one: ![img.png](docs/img.png) and could be found in the docs folder.
 
 
