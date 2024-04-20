@@ -1,8 +1,10 @@
 #include <stdio.h>
 
 #include "LPC175x_6x_hal.h"
-
-__attribute__((section(".crp"))) const uint32_t __CRP_WORD_END__ = 0x87654321;
+#define CRP1 0x12345678
+#define CRP2 0x87654321
+#define CRP3 0x43218765
+__attribute__((section(".crp"), used)) const uint32_t __CRP_WORD_START__ = CRP2;
 
 #define LED_PIN (1 << 0) // GPIO0.0
 #define LED2_PIN (1 << 1) // GPIO0.3

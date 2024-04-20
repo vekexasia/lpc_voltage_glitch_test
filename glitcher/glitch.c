@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "hardware/uart.h"
 #include "hardware/dma.h"
 #include "hardware/sync.h"
 #include "pio_serializer.pio.h"
+#include <string.h>
 #include <time.h>
-
 
 #define LPC_PIN_RX 0
 #define LPC_PIN_TX 1
@@ -32,22 +33,23 @@
 #define CMD_DELAY 'D'
 #define CMD_PULSE 'P'
 #define CMD_GLITCH 'G'
+uart_inst_t *lpcuart;
 
 void initialize_board() {
     gpio_init(MAX_PIN_ENABLE);
-    gpio_put(MAX_PIN_ENABLE, DISABLEMAXOUT);
     gpio_set_dir(MAX_PIN_ENABLE, GPIO_OUT);
+    gpio_put(MAX_PIN_ENABLE, ENABLEMAXOUT);
 
     gpio_init(MAX_PIN_SELECTOR);
-//    gpio_put(MAX_PIN_SELECTOR, 1);
     gpio_set_dir(MAX_PIN_SELECTOR, GPIO_OUT);
+    gpio_put(MAX_PIN_SELECTOR, 1);
 
     gpio_init(SIGNAL_PIN_FROM_LPC);
     gpio_set_dir(SIGNAL_PIN_FROM_LPC, GPIO_IN);
     gpio_pull_up(SIGNAL_PIN_FROM_LPC);
 }
 
-void        power_cycle_target() {
+void  power_cycle_target() {
     gpio_put(MAX_PIN_ENABLE, DISABLEMAXOUT);
     sleep_ms(50);
     gpio_put(MAX_PIN_ENABLE, ENABLEMAXOUT);
@@ -134,14 +136,54 @@ clock_t clock()
 {
     return (clock_t) time_us_64() / 10000;
 }
+#define SYNCHRO  "Synchronized\r\n"
+
 
 int main() {
+    char buf[100];
     set_sys_clock_khz(280000, true);
-    stdio_init_all();
+    stdio_usb_init();
     stdio_set_translate_crlf(&stdio_usb, false);
     initialize_board();
+    for (int i=10; i>0 ; i--) {
+        printf("Starting in %d\r\n", i);
+        sleep_ms(1000);
+//        gpio_put(MAX_PIN_SELECTOR, i%2);
+    }
 
 
+    uint br = uart_init(uart0, 57600);
+    printf("UArt init %d\n", br);
+//    gpio_set_function(LPC_PIN_RX, GPIO_FUNC_UART);
+//    gpio_set_function(LPC_PIN_TX, GPIO_FUNC_UART);
+    sleep_ms(500);
+    while(uart_is_readable(uart0) == true) {
+    printf("FLUSHING\r\n");
+        uart_read_blocking(uart0, buf, 1);
+    }
+
+
+    printf("SENDING\n");
+
+    uart_write_blocking(uart0, "?", 1);
+    printf("Sent '?'");
+    uart_read_blocking(uart0, buf, 2);
+    printf("Received '%s'\n", buf);
+    if (memcmp(buf, SYNCHRO, strlen(SYNCHRO)) == 0) {
+        printf("Failed to synchronize\n");
+        return 1;
+    }
+    printf("Synchronized - sending ack\n");
+    uart_write_blocking(uart0, SYNCHRO, strlen(SYNCHRO));
+    uart_read_blocking(uart0, buf, strlen(SYNCHRO));
+    printf("Received '%s'\n", buf);
+
+    while (true) {
+            printf("Hello, world!\r\n");
+            sleep_ms(1000);
+        }
+}
+/*
     const uint led_pin = 25;
     gpio_init(led_pin);
     gpio_set_dir(led_pin, GPIO_OUT);
@@ -210,3 +252,4 @@ int main() {
     }
 
 }
+/**/

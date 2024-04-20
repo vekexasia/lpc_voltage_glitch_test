@@ -17,14 +17,14 @@ ${CMAKE_CURRENT_LIST_DIR}/pio_serializer.pio
 #dca
 target_link_libraries(${PROJECT_NAME}
         pico_stdlib
-        hardware_pio
+       hardware_pio
         hardware_dma
         hardware_sync
         pico_multicore
         )
 
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
-pico_enable_stdio_uart(${PROJECT_NAME} 0)
+pico_enable_stdio_uart(${PROJECT_NAME} 1)
 
 pico_add_extra_outputs(${PROJECT_NAME})
 add_custom_command(TARGET glitcher POST_BUILD
